@@ -18,7 +18,7 @@ const auto video = reinterpret_cast<__u16 *>(VideoBuffer);
 //+-----------+--------------+--------------+---------------+
 enum TerminalAttributes : __u16 {
 	BlinkCursor             = 0x8000,
-	
+
 	BackgroundBlack         = 0x0000,
 	BackgroundBlue          = 0x1000,
 	BackgroundGreen         = 0x2000,
@@ -27,7 +27,7 @@ enum TerminalAttributes : __u16 {
 	BackgroundMagenta       = 0x5000,
 	BackgroundBrown         = 0x6000,
 	BackgroundGray          = 0x7000,
-	
+
 	ForegroundBlack         = 0x0000,
 	ForegroundBlue          = 0x0100,
 	ForegroundGreen         = 0x0200,
@@ -36,7 +36,7 @@ enum TerminalAttributes : __u16 {
 	ForegroundMagenta       = 0x0500,
 	ForegroundBrown         = 0x0600,
 	ForegroundGray          = 0x0700,
-	
+
 	ForegroundDarkGray      = 0x0800,
 	ForegroundBrightBlue	= 0x0900,
 	ForegroundBrightGreen	= 0x0a00,
@@ -47,10 +47,9 @@ enum TerminalAttributes : __u16 {
 	ForegroundWhite	        = 0x0f00,
 };
 
-
 void clear_screen(__u16 attribute) {
 	for(int i = 0; i < VideoSize; ++i) {
-		video[i] = attribute;	
+		video[i] = attribute;
 	}
 }
 
@@ -64,14 +63,14 @@ int kmain(unsigned long magic, unsigned long mbi) {
 	(void)mbi;
 
 	__u16 attribute = (BackgroundBlue | ForegroundWhite | BlinkCursor);
-	
-	
+
+
 	if(magic != MULTIBOOT_BOOTLOADER_MAGIC) {
 		attribute = (BackgroundRed | ForegroundWhite);
 	}
-	
+
 	clear_screen(attribute);
-	
+
 	// manually put a basic message into the video buffer
 	video[0]  = 'H' | attribute;
 	video[1]  = 'e' | attribute;
@@ -85,7 +84,7 @@ int kmain(unsigned long magic, unsigned long mbi) {
 	video[9]  = 'r' | attribute;
 	video[10] = 'l' | attribute;
 	video[11] = 'd' | attribute;
-	
+
 	while(1) {
 		// loop forever...
 	}
