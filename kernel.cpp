@@ -16,7 +16,6 @@ const auto video = reinterpret_cast<__u16 *>(VideoBuffer);
 //+-----------+--------------+--------------+---------------+
 //| Blink (1) | BG Color (3) | FG Color (4) | Character (8) |
 //+-----------+--------------+--------------+---------------+
-
 enum TerminalAttributes : __u16 {
 	BlinkCursor             = 0x8000,
 	
@@ -64,20 +63,16 @@ int kmain(unsigned long magic, unsigned long mbi) {
 
 	(void)mbi;
 
-	// white on blue
 	__u16 attribute = (BackgroundBlue | ForegroundWhite | BlinkCursor);
 	
 	
 	if(magic != MULTIBOOT_BOOTLOADER_MAGIC) {
-		// printf("invalid magic number: 0x%lx\n", magic);
-		
-		// white on red
 		attribute = (BackgroundRed | ForegroundWhite);
-		//return -1;
 	}
 	
 	clear_screen(attribute);
 	
+	// manually put a basic message into the video buffer
 	video[0]  = 'H' | attribute;
 	video[1]  = 'e' | attribute;
 	video[2]  = 'l' | attribute;
@@ -92,7 +87,7 @@ int kmain(unsigned long magic, unsigned long mbi) {
 	video[11] = 'd' | attribute;
 	
 	while(1) {
-	
+		// loop forever...
 	}
 
 	return 0;

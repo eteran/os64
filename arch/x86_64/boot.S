@@ -91,7 +91,7 @@ init_gdt64_ptr:
 	.word gdt64_end - gdt64 - 1
 	.long gdt64 - KERNEL_VMA
 
-/* ident map of first 4MB GB  */
+/* ident map of first 4MB GB, and mirror it at the -2GB mark  */
 .align 0x1000
 init_pml4:
 	.quad init_pdp - KERNEL_VMA + 3 // [0x0000000000000000 - 0x00000007ffffffff)
@@ -108,7 +108,8 @@ init_pd:
 	.quad 0x0000000000000083 // 0MB - 2MB
 	.quad 0x0000000000200083 // 2MB - 4MB
 	.fill 510,8,0
-	
+
+
 init_stack_start:
 	.fill 0x1000,1,0
 init_stack_end:
@@ -128,9 +129,7 @@ boot64_hang:
 	jmp boot64_hang
 
 boot64:
-	//jmp boot64 /* LOOP FOREVER */
-
-	/* do a indirect to force non-relative jmp */
+	/* do an indirect to force non-relative jmp */
 	movabsq $boot64_high, %rax
 	jmp *%rax
 
