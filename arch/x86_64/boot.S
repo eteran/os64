@@ -120,6 +120,9 @@ boot64_high:
 	/* adjust the stack pointer to be in upper memory */
 	movq $KERNEL_VMA, %rax
 	addq %rax, %rsp
+	
+	movq   $0x0,init_pml4
+	invlpg 0
 
 	/* go to our C entry point */
 	call EXT_C(kmain)
