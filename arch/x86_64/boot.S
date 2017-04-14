@@ -121,6 +121,7 @@ boot64_high:
 	movq $KERNEL_VMA, %rax
 	addq %rax, %rsp
 	
+	/* unmap the kernel from low memory */
 	movq   $0x0,init_pml4
 	invlpg 0
 
