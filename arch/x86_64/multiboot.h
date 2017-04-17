@@ -37,7 +37,7 @@
 #ifndef ASM
 typedef unsigned char      __u8;
 typedef unsigned short     __u16;
-typedef unsigned long      __u32;
+typedef unsigned int       __u32;
 typedef unsigned long long __u64;
 
 #pragma pack (push, 1)
