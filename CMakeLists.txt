@@ -3,11 +3,11 @@ project(os64)
 
 enable_language(ASM)
 
-set(FLAGS_COMMON "-march=native -pedantic -W -Wall -ffreestanding -mno-red-zone -nostdinc -mcmodel=kernel -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-3dnow -mno-avx -mno-avx2")
+set(FLAGS_COMMON "-march=native -fno-PIC -pedantic -W -Wall -ffreestanding -mno-red-zone -nostdinc -mcmodel=kernel -mno-sse3 -mno-ssse3 -mno-sse4.1 -mno-sse4.2 -mno-sse4 -mno-sse4a -mno-3dnow -mno-avx -mno-avx2")
 
 set(CMAKE_C_FLAGS          "${CMAKE_C_FLAGS}   ${FLAGS_COMMON}")
 set(CMAKE_CXX_FLAGS        "${CMAKE_CXX_FLAGS} ${FLAGS_COMMON} -fno-exceptions -fno-rtti -fuse-cxa-atexit -fno-threadsafe-statics")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -nostdlib -mcmodel=kernel -Wl,--build-id=none -Wl,-z,max-page-size=0x1000,-n,-T,${CMAKE_CURRENT_SOURCE_DIR}/link/kernel.ld")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}  -nostdlib -mcmodel=kernel -fno-PIC -no-pie -Wl,--build-id=none -Wl,-z,max-page-size=0x1000,-n,-T,${CMAKE_CURRENT_SOURCE_DIR}/link/kernel.ld")
 
 # in case we ever want to supprot building on 32-bit, we'll make it easy to select at compile time
 if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
