@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 project(os64)
 
 enable_language(ASM)
@@ -22,23 +22,23 @@ elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES "i[3456]86")
 	set(CMAKE_ASM_FLAGS         "${CMAKE_ASM_FLAGS} -m32")
 endif()
 
-set(SOURCE_FILES 	
+set(SOURCE_FILES
 	kernel.cpp
 )
 
 if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
 	set(SOURCE_FILES ${SOURCE_FILES}
-		arch/x86_64/boot.S		
+		arch/x86_64/boot.S
 	)
-	
+
 	include_directories(
 		${CMAKE_CURRENT_SOURCE_DIR}/arch/x86_64
 	)
 elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES "i[3456]86")
 	set(SOURCE_FILES ${SOURCE_FILES}
-		arch/i686/boot.S		
+		arch/i686/boot.S
 	)
-	
+
 	include_directories(
 		${CMAKE_CURRENT_SOURCE_DIR}/arch/i686
 	)
@@ -57,4 +57,19 @@ add_custom_command(TARGET kernel.elf POST_BUILD
 	COMMAND objdump -C -d -S --no-show-raw-insn -mi386:x86-64:intel kernel.elf > kernel.lst
 	COMMAND objdump -C -d -mi386:x86-64:intel kernel.elf > kernel.asm
 	COMMAND strip kernel.elf
+)
+
+add_custom_target(os64.iso
+	COMMAND mkdir -p ${PROJECT_BINARY_DIR}/iso/boot/grub
+	COMMAND mkdir -p ${PROJECT_BINARY_DIR}/iso/bin
+	COMMAND cp ${PROJECT_SOURCE_DIR}/iso/stage2_eltorito ${PROJECT_BINARY_DIR}/iso/boot/grub/
+	COMMAND cp ${PROJECT_SOURCE_DIR}/iso/menu.lst ${PROJECT_BINARY_DIR}/iso/boot/grub/
+	COMMAND cp $<TARGET_FILE:kernel.elf> ${PROJECT_BINARY_DIR}/iso/boot/
+
+	# useful if we ever support mounting the ISO filesystem in the OS itself
+	# COMMAND cp $<TARGET_FILE:clear> ${PROJECT_BINARY_DIR}/iso/bin/
+	COMMAND mkisofs -input-charset=utf-8 -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -V "os64" -iso-level 3 -o ${PROJECT_BINARY_DIR}/os64.iso ${PROJECT_BINARY_DIR}/iso/
+	DEPENDS kernel.elf
+	BYPRODUCTS ${PROJECT_BINARY_DIR}/iso/
+	COMMENT "Generating bootable ISO"
 )
